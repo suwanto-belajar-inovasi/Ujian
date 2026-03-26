@@ -1,5 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>CBT AKM GAS</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root { --primary: #0d6efd; --primary-dark: #0b5ed7; --secondary: #6c757d; --bg: #f4f6f9; --card: #ffffff; --text: #212529; --success: #198754; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; display: flex; flex-direction: column; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        
+        #loginScreen, #successScreen { position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f4f6f9 0%, #e9ecef 100%); }
+        .login-box { background: var(--card); width: 90%; max-width: 380px; padding: 2rem; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .login-header { text-align: center; margin-bottom: 1.5rem; } 
+        .login-header h2 { margin: 0; color: var(--primary); font-weight: 700; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; box-sizing: border-box; font-size: 1rem; transition: 0.3s; margin-bottom: 15px; }
+        .form-control:focus { border-color: var(--primary); outline: none; }
+        .password-wrapper { position: relative; margin-bottom: 15px; } 
+        .password-wrapper input { margin-bottom: 0; padding-right: 40px; }
+        .eye-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #6c757d; font-size: 1.1rem; }
+        .token-wrapper { display: flex; gap: 10px; margin-bottom: 15px; } 
+        .btn-request { background: var(--secondary); color: white; border: none; border-radius: 8px; font-size: 0.8rem; padding: 0 10px; cursor: pointer; white-space: nowrap; }
+        .btn-block { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s; } 
+        .btn-block:hover { background: var(--primary-dark); }
+        .logo-img { display: block; width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; }
+        
+        #rulesScreen { display: none; position: fixed; inset: 0; z-index: 998; flex-direction: column; align-items: center; justify-content: center; background: var(--bg); padding: 20px; }
+        .rules-card { background: white; border-radius: 12px; width: 100%; max-width: 600px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
+        .rules-header { background: var(--primary); color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 1.2rem; }
+        .rules-body { padding: 20px; overflow-y: auto; } 
+        .info-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; } 
+        .info-table td { padding: 8px; border-bottom: 1px solid #eee; font-size: 0.95rem; } 
+        .info-table td:first-child { font-weight: 600; width: 130px; color: #555; }
+        .rules-content { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; font-size: 0.9rem; line-height: 1.6; white-space: pre-line; margin-bottom: 20px; }
+        .rules-footer { padding: 15px 20px; border-top: 1px solid #eee; text-align: right; background: white; display: flex; justify-content: flex-end; gap: 10px; }
+        .btn-start { background: var(--success); color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        
+        #ujianScreen { display: none; flex-direction: column; height: 100%; } 
+        .top-bar { background: white; padding: 10px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; z-index: 100; } 
+        .top-bar .logo-img { width: 35px; height: 35px; margin: 0; } 
+        .user-info { font-size: 0.9rem; font-weight: 600; color: #555; }
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 15px; padding: 15px; position: relative;} 
+        .soal-panel { flex: 3; background: white; border-radius: 8px; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; box-shadow: 0 2px 5px rgba(0,0,0,0.05); padding-bottom: 20px; } 
+        .nav-panel { flex: 1; background: white; border-radius: 8px; padding: 15px; overflow-y: auto; max-width: 280px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .nomor-soal { display: flex; justify-content: space-between; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 15px; font-weight: bold; color: var(--primary); }
+        .teks-soal { font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; } 
+        .teks-soal img { max-width: 100%; border-radius: 5px; border: 1px solid #ddd; }
+        
+        .opsi-group { display: flex; flex-direction: column; gap: 8px; } 
+        .opsi-item { display: flex; align-items: flex-start; padding: 10px 15px; border: 1px solid #dee2e6; border-radius: 6px; cursor: pointer; transition: 0.2s; } 
+        .opsi-item:hover { background: #f8f9fa; border-color: var(--primary); } 
+        .opsi-item input { margin-right: 12px; margin-top: 5px; transform: scale(1.2); }
+        .opsi-content { flex: 1; overflow-x: auto; }
+        .opsi-content p { margin: 0; padding: 0; }
+        .opsi-content img { max-width: 100%; height: auto; border-radius: 5px; display: block; margin: 5px 0; }
+
+        .jodoh-container { position: relative; display: flex; justify-content: space-between; gap: 30px; padding: 20px 10px; user-select: none; } 
+        .jodoh-col { display: flex; flex-direction: column; gap: 20px; flex: 1; z-index: 2; } 
+        .jodoh-item { background: #fff; border: 2px solid #dee2e6; padding: 15px; border-radius: 8px; cursor: pointer; position: relative; transition: 0.2s; display: flex; align-items: center; min-height: 40px; } 
+        .jodoh-item:hover { border-color: var(--primary); } 
+        .jodoh-item.selected { background: #e7f1ff; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25); } 
+        .jodoh-item.matched { border-color: var(--success); background: #f0fff4; } 
+        .jodoh-dot { width: 12px; height: 12px; background: #adb5bd; border-radius: 50%; position: absolute; top: 50%; transform: translateY(-50%); } 
+        .jodoh-item-left .jodoh-dot { right: -6px; } 
+        .jodoh-item-right .jodoh-dot { left: -6px; } 
+        .jodoh-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; } 
+        line { stroke: var(--primary); stroke-width: 3; stroke-linecap: round; }
+        
+        .upload-area { border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 8px; background: #fafafa; margin-bottom: 15px; } 
+        .preview-box { margin-top: 10px; display: none; } 
+        .preview-box img { max-width: 150px; border-radius: 5px; border: 1px solid #ddd; }
+        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; } 
+        .nav-btn { aspect-ratio: 1; border: 1px solid #ddd; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 600; font-size: 0.9rem; } 
+        .nav-btn.active { border-color: var(--primary); background: #e7f1ff; color: var(--primary); } 
+        .nav-btn.filled { background: var(--success); color: white; border-color: var(--success); }
+        .timer-display { background: #fff3cd; color: #856404; padding: 10px; text-align: center; border-radius: 6px; font-size: 1.4rem; font-weight: bold; margin-bottom: 15px; border: 1px solid #ffeeba; }
+        .tab-switch-warning { background: #f8d7da; color: #721c24; padding: 5px; border-radius: 4px; margin-top: 5px; font-size: 0.8rem; text-align: center; }
+        .footer-controls { margin-top: auto; display: flex; justify-content: space-between; padding-top: 20px; } 
+        .btn-nav { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: bold; } 
+        .btn-prev { background: var(--secondary); } 
+        .btn-next { background: var(--primary); } 
+        .btn-submit { background: var(--success); display: none; } 
+        .main-footer { text-align: center; padding: 10px; background: #e9ecef; font-size: 0.8rem; color: #666; font-weight: 600; }
+        
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; } 
+        .modal-content { background: white; width: 90%; max-width: 350px; padding: 20px; border-radius: 10px; max-height: 80vh; overflow-y: auto; position: relative; } 
+        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; cursor: pointer; color: #666; }
+        
+        @media(max-width: 768px) { 
+            .main-area { flex-direction: column; padding: 10px; } 
+            .nav-panel { display: none; } 
+            .mobile-header-panel { display: flex; flex-direction: column; gap: 8px; background: white; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #dee2e6; position: sticky; top: 0; z-index: 95; box-shadow: 0 4px 6px rgba(0,0,0,0.05); } 
+            .mobile-top-row { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 1rem; } 
+            .m-timer { color: #856404; background: #fff3cd; padding: 5px 10px; border-radius: 5px; } 
+            .m-violation { color: #721c24; background: #f8d7da; padding: 5px 10px; border-radius: 5px; font-size: 0.9rem; } 
+            .mobile-nav-trigger-btn { background: var(--primary); color: white; border: none; width: 100%; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; } 
+            .mobile-nav-trigger-btn:active { background: var(--primary-dark); transform: scale(0.98); } 
+            .soal-panel { width: 100%; margin-bottom: 20px; box-sizing: border-box; } 
+        }
+        @media(min-width: 769px) { .mobile-header-panel { display: none; } }
+    </style>
+</head>
+<body>
+    <div id="loginScreen">
+        <div class="login-box">
+            <div class="login-header">
+                <a href="?page=admin" target="_top" title="Klik untuk ke Admin Panel" style="text-decoration:none;">
+                    <img src="https://hanyauntukmu.my.id/assawiyah.jpg" alt="Logo CBT" class="logo-img">
+                </a>
+                <h2>CBT AKM LOGIN</h2>
+                <p style="margin:5px 0 0; color:#777;">panel siswa</p>
+            </div>
+            <select id="selKelas" class="form-control" onchange="filterUjian()"><option value="">-- Pilih Kelas --</option></select>
+            <select id="selUjian" class="form-control" disabled onchange="cekTokenOtomatis()"><option value="">-- Pilih Ujian --</option></select>
+            <input type="text" id="inpUser" class="form-control" placeholder="Username" autocomplete="off">
+            <div class="password-wrapper">
+                <input type="password" id="inpPass" class="form-control" placeholder="Password">
+                <span class="eye-icon" id="eyeIcon" onclick="togglePass()">👁️</span>
+            </div>
+            <div class="token-wrapper">
+                <input type="text" id="inpToken" class="form-control" placeholder="Token Masuk Ujian" style="margin-bottom:0; text-transform:uppercase;">
+                <button class="btn-request" onclick="requestTokenMsg()">Request<br>Token</button>
+            </div>
+            <button id="btnLogin" class="btn-block" onclick="doLogin()">MASUK</button>
+            <button id="btnReset" class="btn-block" onclick="confirmReset()" style="margin-top: 10px; background: #dc3545;">↻ UPDATE DATA (RESET CACHE)</button>
+        </div>
+    </div>
+
+    <div id="rulesScreen">
+        <div class="rules-card">
+            <div class="rules-header">Konfirmasi Data & Tata Tertib</div>
+            <div class="rules-body">
+                <table class="info-table">
+                    <tr><td>Nama Peserta</td><td id="infoNama">: -</td></tr>
+                    <tr><td>NISN / User</td><td id="infoNisn">: -</td></tr>
+                    <tr><td>Mapel Ujian</td><td id="infoMapel">: -</td></tr>
+                    <tr><td>Kode Ujian</td><td id="infoKode">: -</td></tr>
+                </table>
+                <div style="font-weight:bold; margin-bottom:5px; color:#333;">Tata Tertib Ujian:</div>
+                <div class="rules-content" id="txtRules"></div>
+            </div>
+            <div class="rules-footer">
+                <button onclick="backToLogin()" style="background:#6c757d; color:white; border:none; padding:10px 15px; border-radius:6px; cursor:pointer;">Batal</button>
+                <button class="btn-start" onclick="beginExam()">MULAI MENGERJAKAN</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="ujianScreen">
+        <div class="top-bar">
+            <div style="display:flex; align-items:center;">
+                <img src="https://cdn-icons-png.flaticon.com/512/2995/2995459.png" alt="Logo" class="logo-img" style="margin-right:10px;">
+                <div class="user-info"><span id="namaUser">Nama Peserta</span> | <span id="kodeUser">Kode</span></div>
+            </div>
+            <button onclick="confirmFinish()" style="background:#dc3545; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Selesai</button>
+        </div>
+        <div class="main-area">
+            <div class="mobile-header-panel">
+                <div class="mobile-top-row">
+                    <div id="timerMobile" class="m-timer"><i class="fas fa-clock"></i> 00:00:00</div>
+                    <div id="violationMobile" class="m-violation"><i class="fas fa-exclamation-triangle"></i> 0/2</div>
+                </div>
+                <button class="mobile-nav-trigger-btn" onclick="toggleNavModal()"><i class="fas fa-th"></i> Daftar Soal</button>
+            </div>
+            <div class="soal-panel">
+                <div id="soalContainer"></div>
+                <div class="footer-controls">
+                    <button class="btn-nav btn-prev" onclick="move(-1)" id="btnPrev">Sebelumnya</button>
+                    <button class="btn-nav btn-next" onclick="move(1)" id="btnNext">Selanjutnya</button>
+                    <button class="btn-nav btn-submit" onclick="confirmFinish()" id="btnFinish">Selesai / Kirim</button>
+                </div>
+            </div>
+            <div class="nav-panel">
+                <div class="timer-display" id="timer">00:00:00</div>
+                <div style="font-size:0.85rem; margin-bottom:10px; font-weight:bold;">Navigasi Soal</div>
+                <div class="nav-grid" id="navGrid"></div>
+                <div style="margin-top:20px; font-size:0.8rem; color:#dc3545; text-align:center;">⚠️ Dilarang pindah tab / keluar fullscreen!</div>
+                <div class="tab-switch-warning" id="tabWarning">Pelanggaran: 0/2</div>
+            </div>
+        </div>
+        <div class="main-footer">CBT AKM GAS | @hanyauntukmu © 2025</div>
+    </div>
+
+    <div class="modal-overlay" id="mobileNavModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="toggleNavModal()">&times;</span>
+            <div style="text-align:center; font-weight:bold; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">Daftar Soal</div>
+            <div class="nav-grid" id="navGridMobile"></div>
+            <div style="margin-top:15px; font-size:0.8rem; color:#dc3545; text-align:center;">Jaga kejujuran dalam mengerjakan ujian.</div>
+        </div>
+    </div>
+
+    <div id="successScreen" style="display:none;">
+        <div style="background:white; padding:40px; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.1); text-align:center; max-width:400px; width:90%;">
+            <div style="font-size:4rem; color:#198754; margin-bottom:10px;">🎉</div>
+            <h2 style="color:#333; margin:0;">Ujian Selesai</h2>
+            <div id="successScore"></div>
+            <p id="successMsg" style="color:#555;"></p>
+            <button onclick="backToLogin()" style="margin-top:20px; padding:12px 30px; background:#0d6efd; color:white; border:none; border-radius:50px; font-weight:bold; cursor:pointer;">Kembali ke Login</button>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWAz4Gu16tm8YYES0qI3F63viloA_qZP5QdjubbCd0mc96hfiu1MkUL-vi_7AqkXQy/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4lm0E-D5wSXtFj59m2EeTbTzJuqp7-aYq_ktZD6PbiJu698BHaXIPPkc9x2LPBkCmiQ/exec';
 
 async function fetchAPI(action, payload = {}) {
     try {
@@ -399,3 +605,5 @@ function submitExam(forced) {
     });
 }
 </script>
+</body>
+</html>
