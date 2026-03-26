@@ -4,7 +4,7 @@
     <base target="_top">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>CBT AKM GAS</title>
+    <title>CBT BELAJAR INOVASI</title>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -108,7 +108,7 @@
         <div class="login-box">
             <div class="login-header">
                 <a href="?page=admin" target="_top" title="Klik untuk ke Admin Panel" style="text-decoration:none;">
-                    <img src="https://hanyauntukmu.my.id/assawiyah.jpg" alt="Logo CBT" class="logo-img">
+                    <img src="https://lh3.googleusercontent.com/d/1cVKB34hs3aHdIr5OkNhcaZ9OmFHZKR70" alt="Logo CBT" class="logo-img">
                 </a>
                 <h2>CBT AKM LOGIN</h2>
                 <p style="margin:5px 0 0; color:#777;">panel siswa</p>
@@ -152,7 +152,7 @@
     <div id="ujianScreen">
         <div class="top-bar">
             <div style="display:flex; align-items:center;">
-                <img src="https://cdn-icons-png.flaticon.com/512/2995/2995459.png" alt="Logo" class="logo-img" style="margin-right:10px;">
+                <img src="https://lh3.googleusercontent.com/d/1O94lUuV8pHaSiGCoOsxUsOUL7bGsHjTC" alt="Logo" class="logo-img" style="margin-right:10px;">
                 <div class="user-info"><span id="namaUser">Nama Peserta</span> | <span id="kodeUser">Kode</span></div>
             </div>
             <button onclick="confirmFinish()" style="background:#dc3545; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Selesai</button>
@@ -178,10 +178,10 @@
                 <div style="font-size:0.85rem; margin-bottom:10px; font-weight:bold;">Navigasi Soal</div>
                 <div class="nav-grid" id="navGrid"></div>
                 <div style="margin-top:20px; font-size:0.8rem; color:#dc3545; text-align:center;">⚠️ Dilarang pindah tab / keluar fullscreen!</div>
-                <div class="tab-switch-warning" id="tabWarning">Pelanggaran: 0/2</div>
+                <div class="tab-switch-warning" id="tabWarning">Pelanggaran: 0/3</div>
             </div>
         </div>
-        <div class="main-footer">CBT AKM GAS | @hanyauntukmu © 2025</div>
+        <div class="main-footer">CBT BELAJAT INOVASI © 2026</div>
     </div>
 
     <div class="modal-overlay" id="mobileNavModal">
@@ -364,8 +364,8 @@ function startExamUI(data) {
     if(saved) answers = JSON.parse(saved);
 
     tabSwitchCount = parseInt(localStorage.getItem(`tab_switch_count_${data.nisnPeserta}_${data.kodeUjian}`) || '0');
-    document.getElementById('tabWarning').innerText = `Pelanggaran: ${tabSwitchCount}/2`;
-    document.getElementById('violationMobile').innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${tabSwitchCount}/2`;
+    document.getElementById('tabWarning').innerText = `Pelanggaran: ${tabSwitchCount}/3`;
+    document.getElementById('violationMobile').innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${tabSwitchCount}/3`;
 
     renderNav(); renderSoal(0); startTimer(data.sisaDetik);
 
@@ -376,11 +376,11 @@ function startExamUI(data) {
 function triggerPelanggaran() {
     tabSwitchCount++;
     localStorage.setItem(`tab_switch_count_${userMeta.nim}_${userMeta.kode}`, tabSwitchCount);
-    document.getElementById('tabWarning').innerText = `Pelanggaran: ${tabSwitchCount}/2`;
-    document.getElementById('violationMobile').innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${tabSwitchCount}/2`;
+    document.getElementById('tabWarning').innerText = `Pelanggaran: ${tabSwitchCount}/3`;
+    document.getElementById('violationMobile').innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${tabSwitchCount}/3`;
 
-    if (tabSwitchCount >= 2) { confirmFinish(true); } 
-    else { Swal.fire('Peringatan!', `Dilarang keluar dari mode layar penuh / pindah tab! Pelanggaran: ${tabSwitchCount}/2.`, 'warning').then(() => { requestFullScreen(); }); }
+    if (tabSwitchCount >= 3) { confirmFinish(true); } 
+    else { Swal.fire('Peringatan!', `Dilarang keluar dari mode layar penuh / pindah tab! Pelanggaran: ${tabSwitchCount}/3.`, 'warning').then(() => { requestFullScreen(); }); }
 }
 
 function handleVisibilityChange() {
